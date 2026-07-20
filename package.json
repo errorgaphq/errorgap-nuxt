@@ -1,0 +1,46 @@
+{
+  "name": "@errorgap/nuxt",
+  "version": "0.1.0",
+  "description": "Nuxt module for Errorgap error tracking (client and server).",
+  "license": "MIT",
+  "author": "Errorgap",
+  "homepage": "https://github.com/errorgaphq/errorgap-nuxt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/errorgaphq/errorgap-nuxt.git"
+  },
+  "keywords": ["errorgap", "error-tracking", "nuxt", "nuxt-module", "monitoring"],
+  "type": "module",
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "build": "nuxt-module-build build",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@errorgap/browser": "^0.1.1",
+    "@errorgap/node": "^0.1.2",
+    "@nuxt/kit": "^3.13.0",
+    "defu": "^6.1.4"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^0.8.4",
+    "@nuxt/schema": "^3.13.0",
+    "nuxt": "^3.13.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

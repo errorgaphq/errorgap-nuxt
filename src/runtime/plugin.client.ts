@@ -1,7 +1,7 @@
 import { Errorgap } from "@errorgap/browser";
 // @ts-expect-error -- #imports is resolved by Nuxt at app build time.
 import { defineNuxtPlugin, useRuntimeConfig } from "#imports";
-import { routeContext, type RouteLike } from "./context";
+import { routeContext, routeTemplate, type RouteLike } from "./context";
 import type { PublicErrorgapConfig } from "../module";
 
 export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
@@ -20,6 +20,12 @@ export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
     sampleRate: config.sampleRate,
     sourceMaps: config.sourceMaps,
     captureGlobals: config.captureGlobals ?? true,
+    performance: config.performance
+      ? {
+          ...(config.performance === true ? {} : config.performance),
+          routeName: () => routeTemplate(nuxtApp.$router?.currentRoute?.value),
+        }
+      : false,
   });
 
   // Vue render/lifecycle errors surfaced by Nuxt.

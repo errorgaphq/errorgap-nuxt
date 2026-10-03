@@ -27,6 +27,22 @@ export interface ModuleOptions {
   server?: boolean;
   /** Install global window / process handlers. Defaults to true. */
   captureGlobals?: boolean;
+  /**
+   * Measure page loads, client-side navigations, Core Web Vitals and fetch/XHR
+   * calls in the browser (Errorgap → Performance → Browser). Routes are named
+   * from Vue Router's matched route (`/orders/:id`). Off by default.
+   */
+  performance?: boolean | PerformanceSettings;
+}
+
+/** Serializable browser-performance settings (they travel in runtimeConfig). */
+export interface PerformanceSettings {
+  /** Share of page loads measured, 0–1. Defaults to 1. */
+  sampleRate?: number;
+  /** Time fetch and XHR calls. Defaults to true. */
+  trackRequests?: boolean;
+  /** How often batches are sent, in ms. Defaults to 10 000. */
+  flushIntervalMs?: number;
 }
 
 /** Client-safe options mirrored into `runtimeConfig.public.errorgap`. */
@@ -41,6 +57,7 @@ export interface PublicErrorgapConfig {
   sourceMaps?: boolean;
   client?: boolean;
   captureGlobals?: boolean;
+  performance?: boolean | PerformanceSettings;
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -73,6 +90,7 @@ export default defineNuxtModule<ModuleOptions>({
       sourceMaps: options.sourceMaps,
       client: options.client,
       captureGlobals: options.captureGlobals,
+      performance: options.performance,
     };
     nuxt.options.runtimeConfig.public.errorgap = defu(
       nuxt.options.runtimeConfig.public.errorgap as PublicErrorgapConfig,

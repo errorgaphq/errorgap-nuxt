@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eventContext, routeContext, unwrapNitroError } from "../src/runtime/context";
+import { eventContext, routeContext, routeTemplate, unwrapNitroError } from "../src/runtime/context";
 
 describe("routeContext", () => {
   it("uses the full path and a named route as the component", () => {
@@ -60,5 +60,17 @@ describe("unwrapNitroError", () => {
   it("returns a plain error untouched", () => {
     const error = new Error("plain");
     expect(unwrapNitroError(error)).toBe(error);
+  });
+});
+
+describe("routeTemplate", () => {
+  it("names timings by the matched route pattern", () => {
+    expect(routeTemplate({ matched: [{ path: "/" }, { path: "/orders/:id()" }] })).toBe("/orders/:id");
+    expect(routeTemplate({ matched: [{ path: "/docs/:slug(.*)*" }] })).toBe("/docs/:slug(.*)*");
+  });
+
+  it("has nothing to say before a route matched", () => {
+    expect(routeTemplate({ matched: [] })).toBeUndefined();
+    expect(routeTemplate(undefined)).toBeUndefined();
   });
 });

@@ -71,6 +71,23 @@ Once configured, the module automatically reports:
 | `client` | `true` | Capture browser errors |
 | `server` | `true` | Capture Nitro errors |
 | `captureGlobals` | `true` | Install window/process handlers |
+| `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route |
+
+## Browser performance
+
+```ts
+export default defineNuxtConfig({
+  modules: ["@errorgap/nuxt"],
+  errorgap: {
+    // …connection options…
+    performance: { sampleRate: 0.25 },
+  },
+});
+```
+
+Measures page loads, client-side navigations, Core Web Vitals and fetch/XHR
+calls (Errorgap → Performance → Browser). Timings are grouped by the matched
+route pattern (`/orders/:id`), not the URL.
 
 ## Manual reporting
 

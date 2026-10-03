@@ -5,6 +5,19 @@ export interface RouteLike {
   fullPath?: string;
   path?: string;
   name?: unknown;
+  matched?: Array<{ path?: string }>;
+}
+
+/**
+ * The route pattern browser timings are grouped by: Vue Router's matched
+ * record path, with Nuxt's `()` param suffixes dropped (`/orders/:id()` →
+ * `/orders/:id`). Undefined before a route has matched.
+ */
+export function routeTemplate(route: RouteLike | null | undefined): string | undefined {
+  const matched = route?.matched;
+  const path = matched && matched.length > 0 ? matched[matched.length - 1]?.path : undefined;
+  if (!path) return undefined;
+  return path.replace(/\(\)/g, "");
 }
 
 export interface EventLike {

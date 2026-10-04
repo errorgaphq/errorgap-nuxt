@@ -25,6 +25,15 @@ export interface ModuleOptions {
   client?: boolean;
   /** Capture server-side (Nitro) errors. Defaults to true. */
   server?: boolean;
+  /**
+   * Record each server request as an APM transaction (Errorgap → Performance),
+   * linked to the errors it raised and, through the browser SDK's
+   * `x-errorgap-trace` header, to the browser's view of the call. Off by
+   * default.
+   */
+  apm?: boolean;
+  /** Fraction (0..1) of server transactions sent. Defaults to 1. */
+  apmSampleRate?: number;
   /** Install global window / process handlers. Defaults to true. */
   captureGlobals?: boolean;
   /**
@@ -104,8 +113,8 @@ export default defineNuxtModule<ModuleOptions>({
     );
 
     nuxt.options.runtimeConfig.errorgap = defu(
-      nuxt.options.runtimeConfig.errorgap as { server?: boolean },
-      { server: options.server },
+      nuxt.options.runtimeConfig.errorgap as { server?: boolean; apm?: boolean; apmSampleRate?: number },
+      { server: options.server, apm: options.apm, apmSampleRate: options.apmSampleRate },
     );
 
     if (options.client !== false) {

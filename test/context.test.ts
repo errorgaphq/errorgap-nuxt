@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eventContext, routeContext, routeTemplate, unwrapNitroError } from "../src/runtime/context";
+import { eventContext, routeContext, routeTemplate, serverRoute, traceHeader, unwrapNitroError } from "../src/runtime/context";
 
 describe("routeContext", () => {
   it("uses the full path and a named route as the component", () => {
@@ -72,5 +72,26 @@ describe("routeTemplate", () => {
   it("has nothing to say before a route matched", () => {
     expect(routeTemplate({ matched: [] })).toBeUndefined();
     expect(routeTemplate(undefined)).toBeUndefined();
+  });
+});
+
+describe("serverRoute", () => {
+  it("uses the matched server route", () => {
+    expect(serverRoute({ path: "/api/orders/7?x=1", context: { matchedRoute: { path: "/api/orders/:id" } } })).toBe(
+      "/api/orders/:id",
+    );
+  });
+
+  it("falls back to the path for page renders", () => {
+    expect(serverRoute({ path: "/products/7?x=1", context: { matchedRoute: { path: "/**" } } })).toBe("/products/7");
+    expect(serverRoute({ path: "/about" })).toBe("/about");
+  });
+});
+
+describe("traceHeader", () => {
+  it("reads the x-errorgap-trace request header", () => {
+    expect(traceHeader({ node: { req: { headers: { "x-errorgap-trace": "abc" } } } })).toBe("abc");
+    expect(traceHeader({ node: { req: { headers: { "x-errorgap-trace": ["abc", "d"] } } } })).toBe("abc");
+    expect(traceHeader({})).toBeUndefined();
   });
 });

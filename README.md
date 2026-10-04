@@ -70,6 +70,8 @@ Once configured, the module automatically reports:
 | `sourceMaps` | `true` | Resolve client frames through source maps |
 | `client` | `true` | Capture browser errors |
 | `server` | `true` | Capture Nitro errors |
+| `apm` | `false` | Record each server request as an APM transaction (route template, status, duration), linked to the errors it raised and — via the browser SDK's `x-errorgap-trace` header — to the browser's view of the call |
+| `apmSampleRate` | `1` | Fraction of server transactions sent |
 | `captureGlobals` | `true` | Install window/process handlers |
 | `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs, tracePropagationTargets }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route. API calls carry an `x-errorgap-trace` header (same origin, plus any `tracePropagationTargets` prefixes) that links them to server traces |
 

@@ -23,7 +23,37 @@ export function routeTemplate(route: RouteLike | null | undefined): string | und
 export interface EventLike {
   path?: string;
   method?: string;
-  node?: { req?: { method?: string; url?: string; headers?: Record<string, unknown> } };
+  node?: {
+    req?: { method?: string; url?: string; headers?: Record<string, unknown> };
+    res?: { statusCode?: number; once?: (event: string, listener: () => void) => unknown };
+  };
+  context?: Record<string, unknown> & { matchedRoute?: { path?: string } };
+}
+
+/** Per-request transaction state, kept on `event.context.errorgap`. */
+export interface RequestTransactionState {
+  id: string;
+  startedAt: string;
+  start: number;
+}
+
+/**
+ * The route a server request is grouped by: Nitro's matched server route
+ * (`/api/orders/:id`), or the path for page renders (which all match the
+ * renderer's catch-all).
+ */
+export function serverRoute(event: EventLike): string {
+  const matched = event.context?.matchedRoute?.path;
+  const path = stripQuery(event.path ?? event.node?.req?.url ?? "/");
+  if (!matched || matched.includes("**")) return path;
+  return matched;
+}
+
+/** The raw `x-errorgap-trace` header value of an H3 event, if any. */
+export function traceHeader(event: EventLike): string | undefined {
+  const value = event.node?.req?.headers?.["x-errorgap-trace"];
+  if (Array.isArray(value)) return typeof value[0] === "string" ? value[0] : undefined;
+  return typeof value === "string" ? value : undefined;
 }
 
 /** Error context for a client-side (browser) notice from the active route. */

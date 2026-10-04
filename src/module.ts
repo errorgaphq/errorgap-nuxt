@@ -43,6 +43,12 @@ export interface PerformanceSettings {
   trackRequests?: boolean;
   /** How often batches are sent, in ms. Defaults to 10 000. */
   flushIntervalMs?: number;
+  /**
+   * Other origins (URL prefixes) whose API calls carry the
+   * `x-errorgap-trace` header linking them to server traces. Same-origin
+   * calls always do. Strings only, since settings travel in runtimeConfig.
+   */
+  tracePropagationTargets?: string[];
 }
 
 /** Client-safe options mirrored into `runtimeConfig.public.errorgap`. */

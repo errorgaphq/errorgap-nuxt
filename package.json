@@ -1,6 +1,6 @@
 {
   "name": "@errorgap/nuxt",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Nuxt module for Errorgap error tracking (client and server).",
   "license": "MIT",
   "author": "Errorgap",
@@ -41,8 +41,8 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@errorgap/browser": "^0.2.0",
-    "@errorgap/node": "^0.1.2",
+    "@errorgap/browser": "^0.3.0",
+    "@errorgap/node": "^0.2.0",
     "@nuxt/kit": "^3.13.0",
     "defu": "^6.1.4"
   },

@@ -71,7 +71,7 @@ Once configured, the module automatically reports:
 | `client` | `true` | Capture browser errors |
 | `server` | `true` | Capture Nitro errors |
 | `captureGlobals` | `true` | Install window/process handlers |
-| `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route |
+| `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs, tracePropagationTargets }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route. API calls carry an `x-errorgap-trace` header (same origin, plus any `tracePropagationTargets` prefixes) that links them to server traces |
 
 ## Browser performance
 

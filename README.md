@@ -74,6 +74,7 @@ Once configured, the module automatically reports:
 | `apmSampleRate` | `1` | Fraction of server transactions sent |
 | `captureGlobals` | `true` | Install window/process handlers |
 | `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs, tracePropagationTargets }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route. API calls carry an `x-errorgap-trace` header (same origin, plus any `tracePropagationTargets` prefixes) that links them to server traces |
+| `replay` | `true` | Session replay in the browser, as the project's replay settings allow (nothing while replay is off in Errorgap). `false` turns it off in this app; `{ flushIntervalMs }` tunes it. See [Session replay](#session-replay) |
 
 ## Browser performance
 
@@ -90,6 +91,16 @@ export default defineNuxtConfig({
 Measures page loads, client-side navigations, Core Web Vitals and fetch/XHR
 calls (Errorgap → Performance → Browser). Timings are grouped by the matched
 route pattern (`/orders/:id`), not the URL.
+
+## Session replay
+
+The browser records session replay (shown on error groups and incidents in
+Errorgap): a timeline of page loads, route changes, failed API calls, errors and
+rage clicks, plus masked page snapshots. Whether a session is recorded follows
+the project's settings in Errorgap (**Settings → Session replay**). Snapshots
+blank every form field; mark anything else to keep out with `data-errorgap-block`
+(removed) or `data-errorgap-mask` (text masked). See
+[`@errorgap/browser`](https://github.com/errorgaphq/errorgap-js#session-replay).
 
 ## Manual reporting
 

@@ -42,6 +42,18 @@ export interface ModuleOptions {
    * from Vue Router's matched route (`/orders/:id`). Off by default.
    */
   performance?: boolean | PerformanceSettings;
+  /**
+   * Session replay in the browser. On by default, but it records only what the
+   * project's replay settings allow (Settings → Session replay in Errorgap).
+   * `false` turns it off in this app.
+   */
+  replay?: boolean | ReplaySettings;
+}
+
+/** Serializable session-replay settings (they travel in runtimeConfig). */
+export interface ReplaySettings {
+  /** How often recorded events are sent, in ms. Defaults to 10 000. */
+  flushIntervalMs?: number;
 }
 
 /** Serializable browser-performance settings (they travel in runtimeConfig). */
@@ -73,6 +85,7 @@ export interface PublicErrorgapConfig {
   client?: boolean;
   captureGlobals?: boolean;
   performance?: boolean | PerformanceSettings;
+  replay?: boolean | ReplaySettings;
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -88,6 +101,7 @@ export default defineNuxtModule<ModuleOptions>({
     client: true,
     server: true,
     captureGlobals: true,
+    replay: true,
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url);
@@ -106,6 +120,7 @@ export default defineNuxtModule<ModuleOptions>({
       client: options.client,
       captureGlobals: options.captureGlobals,
       performance: options.performance,
+      replay: options.replay,
     };
     nuxt.options.runtimeConfig.public.errorgap = defu(
       nuxt.options.runtimeConfig.public.errorgap as PublicErrorgapConfig,

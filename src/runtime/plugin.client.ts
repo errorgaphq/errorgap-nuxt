@@ -26,6 +26,8 @@ export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
           routeName: () => routeTemplate(nuxtApp.$router?.currentRoute?.value),
         }
       : false,
+    // Follows the project's replay settings; `replay: false` turns it off.
+    replay: config.replay ?? true,
   });
 
   // Vue render/lifecycle errors surfaced by Nuxt.

@@ -76,6 +76,23 @@ Once configured, the module automatically reports:
 | `performance` | `false` | `true` or `{ sampleRate, trackRequests, flushIntervalMs, tracePropagationTargets }` — browser page loads, navigations, Core Web Vitals and API calls, grouped by Vue Router's matched route. API calls carry an `x-errorgap-trace` header (same origin, plus any `tracePropagationTargets` prefixes) that links them to server traces |
 | `replay` | `true` | Session replay in the browser, as the project's replay settings allow (nothing while replay is off in Errorgap). `false` turns it off in this app; `{ flushIntervalMs }` tunes it. See [Session replay](#session-replay) |
 
+## Noise, duplicates and ignored environments
+
+```ts
+errorgap: {
+  ignoreEnvironments: ["test"],
+  ignoreNoise: true,      // browser: drop Script error., extension errors, ResizeObserver notices
+  dedupeWindowMs: 1000,   // browser: an identical error at most once a second
+}
+```
+
+With `@errorgap/browser` 0.6 and `@errorgap/node` 0.5 the module also retries
+failed sends, stops sending for the server's `Retry-After` after a 429, masks
+filter keys at any depth and reports `cause` chains. The server release
+defaults to `ERRORGAP_RELEASE`, the hosting platform's commit variable or the
+git checkout. Uncaught server errors are reported and the exit is left to
+Nitro.
+
 ## Browser performance
 
 ```ts

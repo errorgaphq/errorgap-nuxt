@@ -36,6 +36,15 @@ export interface ModuleOptions {
   apmSampleRate?: number;
   /** Install global window / process handlers. Defaults to true. */
   captureGlobals?: boolean;
+  /** Environments in which nothing is sent. */
+  ignoreEnvironments?: string[];
+  /**
+   * Browser: drop cross-origin `Script error.`, browser-extension errors and
+   * `ResizeObserver loop` notices. Defaults to true.
+   */
+  ignoreNoise?: boolean;
+  /** Browser: an identical error is sent at most once in this window. Defaults to 1000 ms. */
+  dedupeWindowMs?: number;
   /**
    * Measure page loads, client-side navigations, Core Web Vitals and fetch/XHR
    * calls in the browser (Errorgap → Performance → Browser). Routes are named
@@ -84,6 +93,9 @@ export interface PublicErrorgapConfig {
   sourceMaps?: boolean;
   client?: boolean;
   captureGlobals?: boolean;
+  ignoreEnvironments?: string[];
+  ignoreNoise?: boolean;
+  dedupeWindowMs?: number;
   performance?: boolean | PerformanceSettings;
   replay?: boolean | ReplaySettings;
 }
@@ -119,6 +131,9 @@ export default defineNuxtModule<ModuleOptions>({
       sourceMaps: options.sourceMaps,
       client: options.client,
       captureGlobals: options.captureGlobals,
+      ignoreEnvironments: options.ignoreEnvironments,
+      ignoreNoise: options.ignoreNoise,
+      dedupeWindowMs: options.dedupeWindowMs,
       performance: options.performance,
       replay: options.replay,
     };

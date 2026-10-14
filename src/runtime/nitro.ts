@@ -31,6 +31,11 @@ export default defineNitroPlugin((nitroApp: NitroAppLike) => {
     release: pub.release,
     sampleRate: pub.sampleRate,
     captureGlobals: pub.captureGlobals ?? true,
+    // Nitro owns its server process: report uncaught errors, leave the exit
+    // to it.
+    exitOnUncaught: false,
+    // runtimeConfig turns unset options into "", so only pass a real list.
+    ignoreEnvironments: Array.isArray(pub.ignoreEnvironments) ? pub.ignoreEnvironments : undefined,
     apmEnabled: priv.apm === true,
     // runtimeConfig turns unset options into "", so only pass a real number.
     apmSampleRate: typeof priv.apmSampleRate === "number" ? priv.apmSampleRate : undefined,

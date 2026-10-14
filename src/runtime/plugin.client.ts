@@ -20,6 +20,10 @@ export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
     sampleRate: config.sampleRate,
     sourceMaps: config.sourceMaps,
     captureGlobals: config.captureGlobals ?? true,
+    // runtimeConfig turns unset options into "", so only pass real values.
+    ignoreEnvironments: Array.isArray(config.ignoreEnvironments) ? config.ignoreEnvironments : undefined,
+    ignoreNoise: typeof config.ignoreNoise === "boolean" ? config.ignoreNoise : undefined,
+    dedupeWindowMs: typeof config.dedupeWindowMs === "number" ? config.dedupeWindowMs : undefined,
     performance: config.performance
       ? {
           ...(config.performance === true ? {} : config.performance),

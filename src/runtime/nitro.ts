@@ -4,6 +4,7 @@ import { defineNitroPlugin, useRuntimeConfig } from "#imports";
 import {
   eventContext,
   type EventLike,
+  isIgnoredStatus,
   type RequestTransactionState,
   serverRoute,
   traceHeader,
@@ -78,6 +79,7 @@ export default defineNitroPlugin((nitroApp: NitroAppLike) => {
 
   // Nitro reports every unhandled request error through this hook.
   nitroApp.hooks.hook("error", (error: unknown, meta?: { event?: EventLike }) => {
+    if (isIgnoredStatus(error, pub.ignoreStatusCodes)) return;
     const { context, environment } = eventContext(meta?.event);
     const state = meta?.event?.context?.errorgap as RequestTransactionState | undefined;
     if (state) context.transaction_id = state.id;

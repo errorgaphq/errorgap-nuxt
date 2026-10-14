@@ -39,6 +39,12 @@ export interface ModuleOptions {
   /** Environments in which nothing is sent. */
   ignoreEnvironments?: string[];
   /**
+   * HTTP statuses of H3/Nuxt errors (`createError({ statusCode })`) that are
+   * not reported, on the server and in the browser. Defaults to every 4xx, so
+   * 404s from bots and bad links stay out of Errorgap; `[]` reports them all.
+   */
+  ignoreStatusCodes?: number[];
+  /**
    * Browser: drop cross-origin `Script error.`, browser-extension errors and
    * `ResizeObserver loop` notices. Defaults to true.
    */
@@ -94,6 +100,7 @@ export interface PublicErrorgapConfig {
   client?: boolean;
   captureGlobals?: boolean;
   ignoreEnvironments?: string[];
+  ignoreStatusCodes?: number[];
   ignoreNoise?: boolean;
   dedupeWindowMs?: number;
   performance?: boolean | PerformanceSettings;
@@ -132,6 +139,7 @@ export default defineNuxtModule<ModuleOptions>({
       client: options.client,
       captureGlobals: options.captureGlobals,
       ignoreEnvironments: options.ignoreEnvironments,
+      ignoreStatusCodes: options.ignoreStatusCodes,
       ignoreNoise: options.ignoreNoise,
       dedupeWindowMs: options.dedupeWindowMs,
       performance: options.performance,

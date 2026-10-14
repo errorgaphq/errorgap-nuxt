@@ -1,6 +1,6 @@
 {
   "name": "@errorgap/nuxt",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Nuxt module for Errorgap error tracking (client and server).",
   "license": "MIT",
   "author": "Errorgap",

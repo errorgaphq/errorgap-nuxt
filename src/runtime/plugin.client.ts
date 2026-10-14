@@ -1,7 +1,7 @@
 import { Errorgap } from "@errorgap/browser";
 // @ts-expect-error -- #imports is resolved by Nuxt at app build time.
 import { defineNuxtPlugin, useRuntimeConfig } from "#imports";
-import { routeContext, routeTemplate, type RouteLike } from "./context";
+import { isIgnoredStatus, routeContext, routeTemplate, type RouteLike } from "./context";
 import type { PublicErrorgapConfig } from "../module";
 
 export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
@@ -36,6 +36,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
 
   // Vue render/lifecycle errors surfaced by Nuxt.
   nuxtApp.hook("vue:error", (error: unknown, _instance: unknown, info: string) => {
+    if (isIgnoredStatus(error, config.ignoreStatusCodes)) return;
     void Errorgap.notify(error, {
       context: { source: "nuxt.vue:error", lifecycle_hook: info, ...currentRouteContext(nuxtApp) },
     });
@@ -43,6 +44,7 @@ export default defineNuxtPlugin((nuxtApp: NuxtAppLike) => {
 
   // Fatal app-level errors (e.g. thrown in plugins or during hydration).
   nuxtApp.hook("app:error", (error: unknown) => {
+    if (isIgnoredStatus(error, config.ignoreStatusCodes)) return;
     void Errorgap.notify(error, {
       context: { source: "nuxt.app:error", ...currentRouteContext(nuxtApp) },
     });

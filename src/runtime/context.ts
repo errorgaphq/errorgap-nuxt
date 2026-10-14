@@ -93,6 +93,32 @@ function stripQuery(path: string): string {
 }
 
 /**
+ * The HTTP status an H3 or Nuxt error carries (`createError({ statusCode })`):
+ * `statusCode` in h3 1.x, `status` in h3 2.x. Undefined for any other error.
+ */
+export function errorStatusCode(error: unknown): number | undefined {
+  if (!error || typeof error !== "object") return undefined;
+  const { statusCode, status } = error as { statusCode?: unknown; status?: unknown };
+  if (typeof statusCode === "number") return statusCode;
+  if (typeof status === "number") return status;
+  return undefined;
+}
+
+/**
+ * Whether an error is an expected HTTP response rather than an app failure:
+ * its status is in `ignoreStatusCodes`, or, when that isn't a list (unset, or
+ * "" from runtimeConfig), any 4xx, such as a bot probing for `/wp-login.php`.
+ * Errors without a status, and the 500 Nitro wraps unhandled errors in, are
+ * always reported.
+ */
+export function isIgnoredStatus(error: unknown, ignoreStatusCodes?: unknown): boolean {
+  const status = errorStatusCode(error);
+  if (status === undefined) return false;
+  if (Array.isArray(ignoreStatusCodes)) return ignoreStatusCodes.includes(status);
+  return status >= 400 && status < 500;
+}
+
+/**
  * Nitro wraps an unhandled handler error in an H3Error (statusCode 500,
  * `name: "Error"`) and stores the original under `cause`. Report the underlying
  * error so its real type, message, and stack survive instead of a generic

@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { eventContext, routeContext, routeTemplate, serverRoute, traceHeader, unwrapNitroError } from "../src/runtime/context";
+import {
+  errorStatusCode,
+  eventContext,
+  isIgnoredStatus,
+  routeContext,
+  routeTemplate,
+  serverRoute,
+  traceHeader,
+  unwrapNitroError,
+} from "../src/runtime/context";
 
 describe("routeContext", () => {
   it("uses the full path and a named route as the component", () => {
@@ -93,5 +102,40 @@ describe("traceHeader", () => {
     expect(traceHeader({ node: { req: { headers: { "x-errorgap-trace": "abc" } } } })).toBe("abc");
     expect(traceHeader({ node: { req: { headers: { "x-errorgap-trace": ["abc", "d"] } } } })).toBe("abc");
     expect(traceHeader({})).toBeUndefined();
+  });
+});
+
+describe("errorStatusCode", () => {
+  it("reads h3 1.x statusCode and h3 2.x status", () => {
+    expect(errorStatusCode(Object.assign(new Error("Page not found"), { statusCode: 404 }))).toBe(404);
+    expect(errorStatusCode(Object.assign(new Error("Gone"), { status: 410 }))).toBe(410);
+  });
+
+  it("is undefined for plain errors and non-objects", () => {
+    expect(errorStatusCode(new Error("boom"))).toBeUndefined();
+    expect(errorStatusCode("boom")).toBeUndefined();
+    expect(errorStatusCode(null)).toBeUndefined();
+  });
+});
+
+describe("isIgnoredStatus", () => {
+  const withStatus = (statusCode: number) => Object.assign(new Error("x"), { statusCode });
+
+  it("ignores every 4xx by default, including runtimeConfig's empty string", () => {
+    expect(isIgnoredStatus(withStatus(404))).toBe(true);
+    expect(isIgnoredStatus(withStatus(400))).toBe(true);
+    expect(isIgnoredStatus(withStatus(499), "")).toBe(true);
+  });
+
+  it("reports 5xx and errors without a status", () => {
+    expect(isIgnoredStatus(withStatus(500))).toBe(false);
+    expect(isIgnoredStatus(withStatus(503))).toBe(false);
+    expect(isIgnoredStatus(new Error("boom"))).toBe(false);
+  });
+
+  it("follows an explicit list, and [] reports everything", () => {
+    expect(isIgnoredStatus(withStatus(404), [404, 410])).toBe(true);
+    expect(isIgnoredStatus(withStatus(403), [404, 410])).toBe(false);
+    expect(isIgnoredStatus(withStatus(404), [])).toBe(false);
   });
 });
